@@ -19,7 +19,6 @@ public class loginFrame extends javax.swing.JFrame {
      */
     public loginFrame() {
         conn = initializeDatabase.connect();
-        type1Frame = new Type1MainFrame(conn);
         initComponents();
         this.setLocation(400,200);        
     }
@@ -166,8 +165,10 @@ public class loginFrame extends javax.swing.JFrame {
             System.out.println("Login was successful.");
             JOptionPane.showMessageDialog(this, "The login is successful!", "Logged in", JOptionPane.INFORMATION_MESSAGE);
             //IMPORTANT Frame switch occurs.
-            type1Frame.setVisible(true);
             this.dispose();
+            type1Frame = new Type1MainFrame(conn);
+            type1Frame.setVisible(true);
+            
             
             }
             else{

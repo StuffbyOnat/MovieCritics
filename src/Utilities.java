@@ -16,5 +16,10 @@ public class Utilities {
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
         return resizedIcon;
     }
-    
+
+    public Image setImageSize(int x,int y,String imagePath) {
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource(imagePath));
+        Image scaledImage = imageIcon.getImage().getScaledInstance(x, y, Image.SCALE_SMOOTH);
+        return scaledImage;
+    }
 }

@@ -13,8 +13,8 @@ countryOfOrigin varchar(100),
 genre varchar(100),
 directorld varchar(255),
 isWatched boolean,
-leadingActor varchar(255),
-supportingActor varchar(255),
+leadingActorld varchar(255),
+supportingActorld varchar(255),
 about text,
 rating tinyint CHECK (rating >= 1 AND rating <= 10),
 comments text,
@@ -58,6 +58,3 @@ INSERT INTO Movies (title, releaseYear, language, countryOfOrigin, genre, direct
 ('Fight Club', 1999, 'English', 'USA', 'Drama', 'David Fincher', 'Brad Pitt', 'Uykusuzluk çeken bir adamın hikayesi.'),
 ('Kill Bill', 2003, 'English', 'USA', 'Action', 'Quentin Tarantino', 'Uma Thurman', 'Gelin intikam arıyor.');
 
-select * from Movies;
-select * from Persons;
-select * from Users;
