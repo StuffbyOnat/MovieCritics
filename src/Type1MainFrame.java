@@ -13,11 +13,12 @@ public class Type1MainFrame extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Type1MainFrame.class.getName());
     Utilities utilities;
     Connection conn;
+    User user;
     
     /**
      * Creates new form Type1MainFrame
      */
-    public Type1MainFrame(Connection conn) {
+    public Type1MainFrame(Connection conn, String username,String password) {
         this.conn=conn;
         utilities=new Utilities();
         initComponents();

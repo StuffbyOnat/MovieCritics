@@ -44,12 +44,8 @@ public abstract class User {
 
     public ArrayList<Movie> movies;
 
-    public User(int userID, String username, String password, int userType, String email) {
-        this.userID = userID;
-        this.username = username;
-        this.password = password;
-        this.userType = userType;
-        this.email = email;
+    public User(String username, String password) {
+
         this.isParent = (userType == 1 || userType == 2);
         movies=new ArrayList<>();
     }
