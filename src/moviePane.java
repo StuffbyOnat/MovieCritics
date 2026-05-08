@@ -19,7 +19,7 @@ public class moviePane extends JPanel {
     private boolean isHovered = false;
     private String movieTitle;
 
-    public moviePane(String title, String poster) {
+    public moviePane(String title, String poster,boolean parentalRestriction) {
         this.movieTitle = title;
 
         ImageIcon icon = new ImageIcon(poster);

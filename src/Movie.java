@@ -69,8 +69,8 @@ public class Movie {
         return poster;
     }
 
-    public boolean isParentalRestrictions() {
-        return parentalRestrictions;
+    public boolean isParentalRestriction() {
+        return parentalRestriction;
     }
 
     public moviePane pane;
@@ -88,10 +88,10 @@ public class Movie {
     private int rating;
     private String comments;
     private String poster;
-    private boolean parentalRestrictions;
+    private boolean parentalRestriction;
 
-    public Movie(int movieID, String title, int releaseYear, String language, String countryOfOrigin, String genre, String directorLD, boolean isWatched, String leadingActorLD, String supportingActorLD, String about, int rating, String comments, String poster, boolean parentalRestrictions) {
-        this.pane = new moviePane(title,poster);
+    public Movie(int movieID, String title, int releaseYear, String language, String countryOfOrigin, String genre, String directorLD, boolean isWatched, String leadingActorLD, String supportingActorLD, String about, int rating, String comments, String poster, boolean parentalRestriction) {
+        this.pane = new moviePane(title,poster, parentalRestriction);
         this.movieID = movieID;
         this.title = title;
         this.releaseYear = releaseYear;
@@ -106,7 +106,7 @@ public class Movie {
         this.rating = rating;
         this.comments = comments;
         this.poster = poster;
-        this.parentalRestrictions = parentalRestrictions;
+        this.parentalRestriction = parentalRestriction;
     }
     
 }
