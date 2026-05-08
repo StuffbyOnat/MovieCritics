@@ -121,10 +121,15 @@
             <Property name="text" type="java.lang.String" value="Search"/>
           </Properties>
           <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="searchbarFocusGained"/>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="searchbarFocusLost"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchbarActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="searchbarButton">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchbarButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

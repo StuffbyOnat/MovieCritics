@@ -91,7 +91,7 @@ public class Movie {
     private boolean parentalRestriction;
 
     public Movie(int movieID, String title, int releaseYear, String language, String countryOfOrigin, String genre, String directorLD, boolean isWatched, String leadingActorLD, String supportingActorLD, String about, int rating, String comments, String poster, boolean parentalRestriction) {
-        this.pane = new moviePane(title,poster, parentalRestriction);
+        this.pane = new moviePane(title,poster);
         this.movieID = movieID;
         this.title = title;
         this.releaseYear = releaseYear;

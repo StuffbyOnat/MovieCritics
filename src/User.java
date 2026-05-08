@@ -101,7 +101,14 @@ public abstract class User {
                             rs.getString("poster"),
                             rs.getBoolean("parentalRestriction")
                     );
-                    movies.add(movie);
+
+                    if(isParent) {
+                        movies.add(movie);
+                    }
+                    else {
+                        if(!movie.isParentalRestriction())
+                            movies.add(movie);
+                    }
                 }
             }
         }
@@ -125,5 +132,10 @@ public abstract class User {
         mainPanel.revalidate();
         mainPanel.repaint();
 
+    }
+
+    public void searchMovies(String searchTerm,JFrame frame) {
+            searchScreen searchScreen = new searchScreen(searchTerm, conn, this,frame);
+            searchScreen.setVisible(true);
     }
 }

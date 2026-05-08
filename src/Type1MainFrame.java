@@ -66,7 +66,17 @@ public class Type1MainFrame extends javax.swing.JFrame {
         recentMoviesLabel.setText("Recent Movies :");
 
         searchbar.setText("Search");
+        searchbar.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                searchbarFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                searchbarFocusLost(evt);
+            }
+        });
         searchbar.addActionListener(this::searchbarActionPerformed);
+
+        searchbarButton.addActionListener(this::searchbarButtonActionPerformed);
 
         javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
         topPanel.setLayout(topPanelLayout);
@@ -126,6 +136,25 @@ public class Type1MainFrame extends javax.swing.JFrame {
     private void searchbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchbarActionPerformed
+
+    private void searchbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbarButtonActionPerformed
+        String searchTerm = searchbar.getText();
+                if(!searchTerm.equals("Search"))
+            user.searchMovies(searchTerm,this);
+
+    }//GEN-LAST:event_searchbarButtonActionPerformed
+
+    private void searchbarFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchbarFocusGained
+if(searchbar.getText().equals("Search")){
+searchbar.setText("");
+}
+    }//GEN-LAST:event_searchbarFocusGained
+
+    private void searchbarFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchbarFocusLost
+        if(searchbar.getText().isEmpty()){
+            searchbar.setText("Search");
+        }
+    }//GEN-LAST:event_searchbarFocusLost
 
  
 
