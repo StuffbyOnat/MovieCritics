@@ -3,7 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+import java.sql.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 /**
  *
@@ -43,11 +45,85 @@ public abstract class User {
     private boolean isParent;
 
     public ArrayList<Movie> movies;
+    Connection conn;
 
-    public User(String username, String password) {
+    public User(String username, String password,Connection conn) {
+        this.conn=conn;
+    try(PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?")) {
+        stmt.setString(1, username);
+        stmt.setString(2, password);
 
-        this.isParent = (userType == 1 || userType == 2);
-        movies=new ArrayList<>();
+        try(ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                this.userID = rs.getInt("userID");
+                this.username = rs.getString("username");
+                this.password = rs.getString("password");
+                this.userType = rs.getInt("userType");
+                this.email = rs.getString("email");
+                this.isParent = rs.getBoolean("isParent");
+            } else {
+                JOptionPane.showMessageDialog(null, "One or both of your inputs are wrong.", "Wrong Input", JOptionPane.WARNING_MESSAGE);
+            }
+
+
+        }
     }
-    
+    catch (SQLException e){
+    e.printStackTrace();
+    }
+        //Still in constructor
+        movies=new ArrayList<>();
+        fetchMoviesFromDatabase();
+    }
+
+    void fetchMoviesFromDatabase(){
+
+        try(PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Movies")) {
+
+            try(ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Movie movie = new Movie(
+                            rs.getInt("movieID"),
+                            rs.getString("title"),
+                            rs.getInt("releaseYear"),
+                            rs.getString("language"),
+                            rs.getString("countryOfOrigin"),
+                            rs.getString("genre"),
+                            rs.getString("directorld"),
+                            rs.getBoolean("isWatched"),
+                            rs.getString("leadingActorld"),
+                            rs.getString("supportingActorld"),
+                            rs.getString("about"),
+                            rs.getInt("rating"),
+                            rs.getString("comments"),
+                            rs.getString("poster"),
+                            rs.getBoolean("parentalRestriction")
+                    );
+                    movies.add(movie);
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    void listInMovies(JPanel mainPanel){
+
+        mainPanel.removeAll();
+
+        for(int i = 0;i<movies.size();i++){
+
+            JPanel moviePane = movies.get(i).getPane();
+
+            mainPanel.add(moviePane);
+
+        }
+        mainPanel.revalidate();
+        mainPanel.repaint();
+
+    }
 }

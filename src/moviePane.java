@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 // This pane is for mini sized banners of movies.
 public class moviePane extends JPanel {
-    // Utilities utilities = new Utilities(); // Gerekirse aktif edersin
+    // Utilities utilities = new Utilities();
 
     private Image posterImage;
     private boolean isHovered = false;
@@ -70,7 +70,7 @@ public class moviePane extends JPanel {
             FontMetrics fm = g2d.getFontMetrics();
             int textWidth = fm.stringWidth(movieTitle);
 
-            g2d.drawString(movieTitle, (getWidth() - textWidth) / 2, getHeight() / 2);
+            g2d.drawString(movieTitle, (getWidth() - textWidth) / 2, getHeight() - 20);
 
             g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 

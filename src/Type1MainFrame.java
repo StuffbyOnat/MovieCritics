@@ -20,10 +20,12 @@ public class Type1MainFrame extends javax.swing.JFrame {
      */
     public Type1MainFrame(Connection conn, String username,String password) {
         this.conn=conn;
+        user = new Parent(username, password, conn);
         utilities=new Utilities();
         initComponents();
         this.setSize(800, 600);
         setFrameIcons();
+        user.listInMovies(mainPanel);
     }
     
     void setFrameIcons(){

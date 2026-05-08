@@ -56,12 +56,12 @@ INSERT INTO Persons (firstName, lastName, dateOfBirth, nationality) VALUES
 ('Brad', 'Pitt', '1963-12-18', 'American'),
 ('Uma', 'Thurman', '1970-04-29', 'American');
 
-INSERT INTO Movies (title, releaseYear, language, countryOfOrigin, genre, directorld, leadingActorld, supportingActorld, about) VALUES 
-('Inception', 2010, 'English', 'USA', 'Sci-Fi', 'Christopher Nolan', 'Leonardo DiCaprio', 'Joseph Gordon-Levitt', 'Theft within dreams.'),
-('Pulp Fiction', 1994, 'English', 'USA', 'Crime', 'Quentin Tarantino', 'John Travolta', 'Samuel L. Jackson', 'Intersecting mob stories.'),
-('The Dark Knight', 2008, 'English', 'USA', 'Action', 'Christopher Nolan', 'Christian Bale', 'Heath Ledger', 'The battle between Batman and the Joker.'),
-('Fight Club', 1999, 'English', 'USA', 'Drama', 'David Fincher', 'Brad Pitt', 'Edward Norton', 'The story of an insomniac man.'),
-('Kill Bill', 2003, 'English', 'USA', 'Action', 'Quentin Tarantino', 'Uma Thurman', 'Lucy Liu', 'The Bride seeks revenge.');
+INSERT INTO Movies (title, releaseYear, language, countryOfOrigin, genre, directorld, leadingActorld, supportingActorld, about,poster) VALUES 
+('Inception', 2010, 'English', 'USA', 'Sci-Fi', 'Christopher Nolan', 'Leonardo DiCaprio', 'Joseph Gordon-Levitt', 'Theft within dreams.','src/Posters/Inception.jpg'),
+('Pulp Fiction', 1994, 'English', 'USA', 'Crime', 'Quentin Tarantino', 'John Travolta', 'Samuel L. Jackson', 'Intersecting mob stories.','src/Posters/PulpFiction.jpg'),
+('The Dark Knight', 2008, 'English', 'USA', 'Action', 'Christopher Nolan', 'Christian Bale', 'Heath Ledger', 'The battle between Batman and the Joker.','src/Posters/DarkKnight.jpg'),
+('Fight Club', 1999, 'English', 'USA', 'Drama', 'David Fincher', 'Brad Pitt', 'Edward Norton', 'The story of an insomniac man.','src/Posters/FightClub.jpg'),
+('Kill Bill', 2003, 'English', 'USA', 'Action', 'Quentin Tarantino', 'Uma Thurman', 'Lucy Liu', 'The Bride seeks revenge.','src/Posters/KillBill.jpg');
 
 SELECT * FROM Movies;
 SELECT * FROM Persons;

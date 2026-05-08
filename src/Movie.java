@@ -9,6 +9,70 @@
  */
 public class Movie {
 
+    public moviePane getPane() {
+        return pane;
+    }
+
+    public int getMovieID() {
+        return movieID;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public String getCountryOfOrigin() {
+        return countryOfOrigin;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getDirectorLD() {
+        return directorLD;
+    }
+
+    public boolean isWatched() {
+        return isWatched;
+    }
+
+    public String getLeadingActorLD() {
+        return leadingActorLD;
+    }
+
+    public String getSupportingActorLD() {
+        return supportingActorLD;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public boolean isParentalRestrictions() {
+        return parentalRestrictions;
+    }
+
     public moviePane pane;
     private int movieID;
     private String title;
