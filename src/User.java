@@ -43,6 +43,11 @@ public abstract class User {
     private int userType;//1 for father,2 for mother,3 for son,4 for daughter
     private String email;
     private boolean isParent;
+
+    public JFrame getMainFrame() {
+        return MainFrame;
+    }
+
     private JFrame MainFrame;
 
     public ArrayList<Movie> movies;
@@ -112,10 +117,11 @@ public abstract class User {
                         panes.add(pane);
                     }
                     else {
-                        if(!movie.isParentalRestriction())
-                            movies.add(movie);
-                            panes.add(pane);
-                    }
+    if(!movie.isParentalRestriction()) {
+        movies.add(movie);
+        panes.add(pane);
+      }
+    }
                 }
             }
         }
@@ -127,9 +133,14 @@ public abstract class User {
 
     void listInMovies(JPanel mainPanel){
 
+        if (this.movies == null || this.movies.isEmpty()) {
+            return; 
+        }
         mainPanel.removeAll();
 
         for(int i = 0;i<movies.size();i++){
+
+
 
             JPanel moviePane = panes.get(i);
 

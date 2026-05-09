@@ -68,6 +68,11 @@ catch (Exception e){
                     movieScreen.setVisible(true);
                     previousFrame.setVisible(false);
                 }
+                else{
+                    movieScreenChild movieScreen = new movieScreenChild(conn, movieID, previousFrame,(Child) user);
+                    movieScreen.setVisible(true);
+                    previousFrame.setVisible(false);
+                }
             }
         });
     }

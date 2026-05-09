@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.sql.*;
 
 public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
@@ -20,6 +19,7 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
         setFrameIcons();
         createPopups();
         user.listInMovies(mainPanel);
+        Username.setText(user.getUsername());
     }
 
     void setFrameIcons(){
@@ -364,7 +364,7 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
 
         topPanel = new javax.swing.JPanel();
         welcomeText = new javax.swing.JLabel();
-        username = new javax.swing.JLabel();
+        Username = new javax.swing.JLabel();
         settingsButton = new javax.swing.JButton();
         menuButton = new javax.swing.JButton();
         recentMoviesLabel = new javax.swing.JLabel();
@@ -378,8 +378,8 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
         welcomeText.setFont(new java.awt.Font("Segoe Script", 0, 24));
         welcomeText.setText("Welcome");
 
-        username.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18));
-        username.setText("Username");
+        Username.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18));
+        Username.setText("Username");
 
         menuButton.addActionListener(this::menuButtonActionPerformed);
 
@@ -407,7 +407,7 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
                                 .addContainerGap()
                                 .addComponent(welcomeText, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
                                 .addComponent(searchbarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -430,7 +430,7 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
                                                 .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                                 .addComponent(welcomeText, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                         .addComponent(settingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(topPanelLayout.createSequentialGroup()
                                                                 .addGap(48, 48, 48)
@@ -499,6 +499,6 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
     private javax.swing.JButton searchbarButton;
     private javax.swing.JButton settingsButton;
     private javax.swing.JPanel topPanel;
-    private javax.swing.JLabel username;
+    private javax.swing.JLabel Username;
     private javax.swing.JLabel welcomeText;
 }

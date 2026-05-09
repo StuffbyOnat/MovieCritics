@@ -47,9 +47,15 @@
                               <Component id="titleField" min="-2" pref="287" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace pref="18" max="32767" attributes="0"/>
-                          <Component id="user_selector" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="parentalRestriction" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="user_selector" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="parentalRestriction" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="genreField" min="-2" pref="71" max="-2" attributes="0"/>
+                              <Component id="genreLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -105,7 +111,14 @@
                               <Component id="titleField" min="-2" pref="38" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" min="-2" pref="135" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jScrollPane1" min="-2" pref="135" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="genreLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="genreField" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -290,6 +303,19 @@
         <Component class="javax.swing.JTextField" name="yearField">
           <Properties>
             <Property name="text" type="java.lang.String" value="year"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="genreLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="12" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Genre: "/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="genreField">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jTextField1"/>
           </Properties>
         </Component>
       </SubComponents>

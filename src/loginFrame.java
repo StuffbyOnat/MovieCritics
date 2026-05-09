@@ -166,11 +166,18 @@ public class loginFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "The login is successful!", "Logged in", JOptionPane.INFORMATION_MESSAGE);
             //IMPORTANT Frame switch occurs.
             this.dispose();
-            if(rs.getBoolean("isParent"))
-            type1Frame = new Type1MainFrame(conn,username,password);
-            type1Frame.setVisible(true);
-            
-            
+            if(rs.getBoolean("isParent")) {
+                this.dispose();
+                type1Frame = new Type1MainFrame(conn, username, password);
+                type1Frame.setVisible(true);
+
+            }
+            else {
+                Type2MainFrame type2MainFrame = new Type2MainFrame(conn, username, password);
+                type2MainFrame.setVisible(true);
+                                this.dispose();
+
+            }
             }
             else{
             javax.swing.JOptionPane.showMessageDialog(this, 
