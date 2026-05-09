@@ -34,8 +34,12 @@ public class movieScreenParent extends javax.swing.JFrame {
         utilities=new Utilities();
         initComponents();
         initializeComboBox();
-        icon.setIcon(utilities.setIconSize(149,179, poster));
-
+        try {
+            icon.setIcon(utilities.setIconSize(149, 179, poster));
+        } catch (Exception e) {
+            e.printStackTrace();
+                JOptionPane.showMessageDialog(null,"Error loading poster: " + e.getMessage(), "Image Load Error", JOptionPane.ERROR_MESSAGE);
+        }
         try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM Movies WHERE movieID = ? ")) {
             ps.setInt(1, movieID);
             try(ResultSet rs = ps.executeQuery()) {
