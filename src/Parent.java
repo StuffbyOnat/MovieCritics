@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Parent extends User{
 
@@ -15,11 +17,18 @@ public class Parent extends User{
     }
 
     public void moderateContent(){
-
+            //This methods purpose is done by deleteComment button in movieScreenParent class. It is here to show that parents have the right to moderate content.
     }
 
-    public void setRestriction(){
-
+    public int setRestriction(int movieID,boolean isRestricted){
+        try(PreparedStatement stmt = conn.prepareStatement("UPDATE movies SET parentalRestriction = ? WHERE movieID = ?")) {
+            stmt.setBoolean(1, isRestricted);
+            stmt.setInt(2, movieID);
+            return stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public void manageAccounts(){
@@ -28,8 +37,7 @@ public class Parent extends User{
     }
 
     public void editMovie(Movie movie){
-
-
+        //This method is done by the interactive movieScreenParent class. It is here to show that parents have the right to edit movies.
     }
 
     public void removeMovie(Movie movie){
@@ -38,7 +46,21 @@ public class Parent extends User{
     }
 
     public void addMovie(Movie movie){
-
+     try(PreparedStatement stmt = conn.prepareStatement("INSERT INTO movies (title, releaseYear, language, countryOfOrigin, genre, directorld, leadingActorld, supportingActorld, about, rating) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            stmt.setString(1, movie.getTitle());
+            stmt.setInt(2, movie.getReleaseYear());
+            stmt.setString(3, movie.getLanguage());
+            stmt.setString(4, movie.getCountryOfOrigin());
+            stmt.setString(5, movie.getGenre());
+            stmt.setString(6, movie.getDirectorLD());
+            stmt.setString(7, movie.getLeadingActorLD());
+            stmt.setString(8, movie.getSupportingActorLD());
+            stmt.setString(9, movie.getAbout());
+            stmt.setInt(10, movie.getRating());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+         e.printStackTrace();
+     }
 
     }
 

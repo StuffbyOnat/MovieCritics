@@ -20,8 +20,10 @@ public class moviePane extends JPanel {
     private String movieTitle;
     private JFrame previousFrame;
     Connection conn;
+    User user;
 
-    public moviePane(Connection conn,String title, String poster, int movieID,JFrame previousFrame) {
+    public moviePane(Connection conn,String title, String poster, int movieID,JFrame previousFrame,User user) {
+        this.user=user;
         this.conn=conn;
         this.movieTitle = title;
 
@@ -46,9 +48,11 @@ public class moviePane extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                movieScreen movieScreen = new movieScreen(conn,title,poster,movieID,previousFrame);
-                movieScreen.setVisible(true);
-                previousFrame.setVisible(false);
+                if(user.isParent()) {
+                    movieScreenParent movieScreen = new movieScreenParent(conn, title, poster, movieID, previousFrame, (Parent) user);
+                    movieScreen.setVisible(true);
+                    previousFrame.setVisible(false);
+                }
             }
         });
     }

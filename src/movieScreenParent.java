@@ -13,18 +13,20 @@ import java.sql.SQLException;
  *
  * @author onatu
  */
-public class movieScreen extends javax.swing.JFrame {
+public class movieScreenParent extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(movieScreen.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(movieScreenParent.class.getName());
     Utilities utilities;
     Connection conn;
     int movieID;
     Movie movie;
     JFrame previousFrame;
+    Parent user;
     /**
      * Creates new form movieScreen
      */
-    public movieScreen(Connection conn,String title,String poster,int movieID,JFrame previousFrame) {
+    public movieScreenParent(Connection conn,String title,String poster,int movieID,JFrame previousFrame,Parent user) {
+        this.user=user;
         this.previousFrame=previousFrame;
         this.movieID=movieID;
         this.conn=conn;
@@ -56,6 +58,8 @@ public class movieScreen extends javax.swing.JFrame {
                     about.setLineWrap(true);
                     about.setWrapStyleWord(true);
                     rating.setText("Rating: " + movie.getRating() + "/10");
+                    titleField.setText(movie.getTitle());
+                    deleteComment.setEnabled(false);
                 }
             }
         } catch (SQLException e) {
@@ -69,11 +73,11 @@ public class movieScreen extends javax.swing.JFrame {
     }
     void loadMovieDetailsByUser() {
 
-        if(!user.getSelectedItem().equals("-User-")) {
+        if(!user_selector.getSelectedItem().equals("-User-")) {
             String sql = "SELECT Movies.about,User_Critics.comment,User_Critics.rating FROM User_Critics JOIN Movies ON Movies.movieID=User_Critics.movieID WHERE Movies.movieID = ? AND User_Critics.userID = (SELECT userID FROM Users WHERE username = ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setInt(1, movieID);
-                ps.setString(2, (String) user.getSelectedItem());
+                ps.setString(2, (String) user_selector.getSelectedItem());
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         about.setText(rs.getString("about"));
@@ -83,11 +87,21 @@ public class movieScreen extends javax.swing.JFrame {
                         comments.setLineWrap(true);
                         comments.setWrapStyleWord(true);
                         rating.setText("Rating: " + rs.getInt("rating")+"/10");
-
+                        if(comments.getText().isEmpty()){
+                            comments.setText("No comment has been made.");
+                            deleteComment.setEnabled(false);
+                        }
+                        else {
+                            deleteComment.setEnabled(true);
+                        }
                     }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+            }
+            if(comments.getText().isEmpty()){
+                comments.setText("No comment has been made.");
+                deleteComment.setEnabled(false);
             }
         }
         else{
@@ -95,6 +109,7 @@ public class movieScreen extends javax.swing.JFrame {
             about.setLineWrap(true);
             about.setWrapStyleWord(true);
             comments.setText("");
+            deleteComment.setEnabled(false);
             rating.setText("Rating: " + movie.getRating() + "/10");
         }
     }
@@ -107,7 +122,7 @@ public class movieScreen extends javax.swing.JFrame {
             ps.setInt(1,movieID);
             try(ResultSet rs=ps.executeQuery()){
                 while(rs.next()) {
-                    user.addItem(rs.getString("username"));
+                    user_selector.addItem(rs.getString("username"));
                 }
             }
 
@@ -118,7 +133,6 @@ public class movieScreen extends javax.swing.JFrame {
         }
 
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -138,11 +152,12 @@ public class movieScreen extends javax.swing.JFrame {
         about = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         comments = new javax.swing.JTextArea();
-        jLabel2 = new javax.swing.JLabel();
-        user = new javax.swing.JComboBox<>();
+        commentsLabel = new javax.swing.JLabel();
+        user_selector = new javax.swing.JComboBox<>();
         deleteComment = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         backButton = new javax.swing.JButton();
+        titleField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 600));
@@ -175,18 +190,23 @@ public class movieScreen extends javax.swing.JFrame {
         comments.setRows(5);
         jScrollPane2.setViewportView(comments);
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel2.setText("Comments");
+        commentsLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        commentsLabel.setText("Comments");
 
-        user.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-User-" }));
-        user.addActionListener(this::userActionPerformed);
+        user_selector.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-User-" }));
+        user_selector.addActionListener(this::user_selectorActionPerformed);
 
         deleteComment.setText("Delete Comment");
         deleteComment.addActionListener(this::deleteCommentActionPerformed);
 
         saveButton.setText("Save");
+        saveButton.addActionListener(this::saveButtonActionPerformed);
 
         backButton.setText("Back");
+        backButton.addActionListener(this::backButtonActionPerformed);
+
+        titleField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        titleField.setText("Title: ");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -198,9 +218,11 @@ public class movieScreen extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(posterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(titleField, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                        .addComponent(user, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(user_selector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(parentalRestriction))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -212,7 +234,7 @@ public class movieScreen extends javax.swing.JFrame {
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(deleteComment))
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(commentsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -229,13 +251,15 @@ public class movieScreen extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(posterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(parentalRestriction)
-                            .addComponent(user, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(34, 34, 34)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(parentalRestriction)
+                                .addComponent(user_selector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(titleField, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
+                .addComponent(commentsLabel)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(2, 2, 2)
@@ -257,14 +281,14 @@ public class movieScreen extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
+    private void user_selectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_selectorActionPerformed
         loadMovieDetailsByUser();
-    }//GEN-LAST:event_userActionPerformed
+    }//GEN-LAST:event_user_selectorActionPerformed
 
     private void deleteCommentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteCommentActionPerformed
-        if(!user.getSelectedItem().equals("-User-")) {
-            String username = (String) user.getSelectedItem();
-            String sql = "DELETE FROM User_Critics WHERE movieID = ? AND userID = (SELECT userID FROM Users WHERE username = ?)";
+        if(!user_selector.getSelectedItem().equals("-User-")) {
+            String username = (String) user_selector.getSelectedItem();
+            String sql = "UPDATE User_Critics SET comment = '', rating = NULL WHERE movieID = ? AND userID = (SELECT userID FROM Users WHERE username = ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)){
                 ps.setInt(1,movieID);
                 ps.setString(2,username);
@@ -277,6 +301,7 @@ public class movieScreen extends javax.swing.JFrame {
                     if (rowsAffected > 0) {
                         JOptionPane.showMessageDialog(this, "Comment deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                         comments.setText("");
+                        deleteComment.setEnabled(false);
                     }
                 }
             }
@@ -287,15 +312,56 @@ public class movieScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_deleteCommentActionPerformed
 
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        //applying parentalRestriction
+        boolean isRestricted = parentalRestriction.isSelected();
+        int isSuccessful=user.setRestriction(movieID,isRestricted);
+        //for comments and about
+        if(!user_selector.getSelectedItem().equals("-User-")) {
+            String username = (String) user_selector.getSelectedItem();
+
+
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE Movies SET about = ? WHERE movieID = ?")) {
+                ps.setString(1, about.getText());
+                ps.setInt(2, movieID);
+                isSuccessful = ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,"Error saving changes: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE Movies set title=? where movieID=?")) {
+                ps.setString(1, titleField.getText());
+                ps.setInt(2, movieID);
+                isSuccessful = ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,"Error saving changes: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+
+        }
+        if (isSuccessful > 0) {
+            JOptionPane.showMessageDialog(this, "Changes saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "No changes were made.", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+            previousFrame.setVisible(true);
+            this.dispose();
+    }//GEN-LAST:event_backButtonActionPerformed
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea about;
     private javax.swing.JButton backButton;
     private javax.swing.JTextArea comments;
+    private javax.swing.JLabel commentsLabel;
     private javax.swing.JButton deleteComment;
     private javax.swing.JLabel icon;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -303,6 +369,7 @@ public class movieScreen extends javax.swing.JFrame {
     private javax.swing.JPanel posterPanel;
     private javax.swing.JLabel rating;
     private javax.swing.JButton saveButton;
-    private javax.swing.JComboBox<String> user;
+    private javax.swing.JTextField titleField;
+    private javax.swing.JComboBox<String> user_selector;
     // End of variables declaration//GEN-END:variables
 }

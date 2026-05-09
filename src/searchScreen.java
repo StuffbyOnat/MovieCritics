@@ -157,7 +157,7 @@ public class searchScreen extends javax.swing.JFrame {
                             rs.getString("poster"),
                             rs.getBoolean("parentalRestriction")
                     );
-                    moviePane pane = new moviePane(conn,movie.getTitle(),movie.getPoster(),movie.getMovieID(),this);
+                    moviePane pane = new moviePane(conn,movie.getTitle(),movie.getPoster(),movie.getMovieID(),this,user);
                     panes.add(pane);
                     if(!user.isParent()&&!movie.isParentalRestriction()){
                         searchResults.add(movie);

@@ -53,6 +53,18 @@ CREATE TABLE User_Critics
     FOREIGN KEY (movieID) REFERENCES Movies(movieID) ON DELETE CASCADE
 );
 
+DELIMITER //
+CREATE TRIGGER after_critic_insert
+AFTER INSERT ON User_Critics
+FOR EACH ROW
+BEGIN
+    -- Bir filme yeni yorum yapıldığında, o filmin User_Critics tablosundaki ortalama puanını alır ve yuvarlayıp (ROUND) Movies tablosuna yazar
+    UPDATE Movies 
+    SET rating = (SELECT ROUND(AVG(rating)) FROM User_Critics WHERE movieID = NEW.movieID)
+    WHERE movieID = NEW.movieID;
+END //
+DELIMITER ;
+
 INSERT INTO Users(username, password, userType, email, isParent) VALUES 
 ('onatu', '1234', 1, 'onat.unlu@yandex.com', true),
 ('ardat', '1234', 3, 'arda.topalli@cibirnet.com', false),
@@ -81,19 +93,6 @@ INSERT INTO User_Critics (userID, movieID, rating, comment) VALUES
 (2, 1004, 8, 'Aksiyon sahneleri çok iyi ama biraz kanlı.'),
 (3, 1001, 9, 'Tarantino diyalogları yine şaşırtmadı.'),
 (5, 1003, 10, 'Dövüş Kulübünün ilk kuralı...');
-
--- EKLENEN TRIGGER (Tetikleyici): Ortalama Puanı Otomatik Güncelleme
-DELIMITER //
-CREATE TRIGGER after_critic_insert
-AFTER INSERT ON User_Critics
-FOR EACH ROW
-BEGIN
-    -- Bir filme yeni yorum yapıldığında, o filmin User_Critics tablosundaki ortalama puanını alır ve yuvarlayıp (ROUND) Movies tablosuna yazar
-    UPDATE Movies 
-    SET rating = (SELECT ROUND(AVG(rating)) FROM User_Critics WHERE movieID = NEW.movieID)
-    WHERE movieID = NEW.movieID;
-END //
-DELIMITER ;
 
 SELECT * FROM Movies;
 SELECT * FROM Persons;

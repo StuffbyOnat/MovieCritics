@@ -105,7 +105,7 @@ public abstract class User {
                             rs.getString("poster"),
                             rs.getBoolean("parentalRestriction")
                     );
-                    moviePane pane = new moviePane(conn,movie.getTitle(),movie.getPoster(),movie.getMovieID(),MainFrame);
+                    moviePane pane = new moviePane(conn,movie.getTitle(),movie.getPoster(),movie.getMovieID(),MainFrame,this);
 
                     if(isParent) {
                         movies.add(movie);

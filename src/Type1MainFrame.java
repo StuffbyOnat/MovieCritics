@@ -8,7 +8,7 @@ import java.sql.*;
  *
  * @author onatu
  */
-public class Type1MainFrame extends javax.swing.JFrame {
+public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Type1MainFrame.class.getName());
     Utilities utilities;
@@ -157,7 +157,10 @@ searchbar.setText("");
         }
     }//GEN-LAST:event_searchbarFocusLost
 
- 
+    @Override
+    public void refreshMovies() {
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel mainPanel;
