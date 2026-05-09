@@ -19,8 +19,9 @@ public class Type1MainFrame extends javax.swing.JFrame {
      * Creates new form Type1MainFrame
      */
     public Type1MainFrame(Connection conn, String username,String password) {
+
         this.conn=conn;
-        user = new Parent(username, password, conn);
+        user = new Parent(username, password, conn,this);
         utilities=new Utilities();
         initComponents();
         this.setSize(800, 600);

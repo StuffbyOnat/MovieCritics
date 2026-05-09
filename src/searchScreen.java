@@ -138,8 +138,9 @@ public class searchScreen extends javax.swing.JFrame {
 
             try (ResultSet rs = ps.executeQuery()) {
                 ArrayList<Movie> searchResults = new ArrayList<>();
+                ArrayList<moviePane> panes=new ArrayList<>();
                 while (rs.next()) {
-                    Movie movie = new Movie(
+                    Movie movie = new Movie(conn,
                             rs.getInt("movieID"),
                             rs.getString("title"),
                             rs.getInt("releaseYear"),
@@ -156,17 +157,17 @@ public class searchScreen extends javax.swing.JFrame {
                             rs.getString("poster"),
                             rs.getBoolean("parentalRestriction")
                     );
+                    moviePane pane = new moviePane(conn,movie.getTitle(),movie.getPoster(),movie.getMovieID(),this);
+                    panes.add(pane);
                     if(!user.isParent()&&!movie.isParentalRestriction()){
                         searchResults.add(movie);
 
-                        moviePane card = movie.getPane();
-                        mainPanel.add(card);
+                        mainPanel.add(pane);
                     }
                     else{
                         searchResults.add(movie);
 
-                        moviePane card = movie.getPane();
-                        mainPanel.add(card);
+                        mainPanel.add(pane);
                     }
 
                 }

@@ -8,8 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
+import java.sql.Connection;
+import javax.swing.*;
 
 // This pane is for mini sized banners of movies.
 public class moviePane extends JPanel {
@@ -18,11 +18,14 @@ public class moviePane extends JPanel {
     private Image posterImage;
     private boolean isHovered = false;
     private String movieTitle;
+    private JFrame previousFrame;
+    Connection conn;
 
-    public moviePane(String title, String poster) {
+    public moviePane(Connection conn,String title, String poster, int movieID,JFrame previousFrame) {
+        this.conn=conn;
         this.movieTitle = title;
 
-        ImageIcon icon = new ImageIcon(poster);
+        ImageIcon icon = new ImageIcon(getClass().getResource(poster));
         this.posterImage = icon.getImage();
 
         setPreferredSize(new Dimension(160, 240));
@@ -43,10 +46,9 @@ public class moviePane extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println(movieTitle + " kartına tıklandı!");
-
-                // İleride buraya filmin detay ekranını (MovieDetailFrame) açan kodu yazacaksın.
-                // Örnek: new MovieDetailFrame(movieTitle).setVisible(true);
+                movieScreen movieScreen = new movieScreen(conn,title,poster,movieID,previousFrame);
+                movieScreen.setVisible(true);
+                previousFrame.setVisible(false);
             }
         });
     }

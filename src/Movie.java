@@ -3,15 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+import java.sql.Connection;
+
 /**
  *
  * @author onatu
  */
 public class Movie {
 
-    public moviePane getPane() {
-        return pane;
-    }
+
 
     public int getMovieID() {
         return movieID;
@@ -73,7 +73,7 @@ public class Movie {
         return parentalRestriction;
     }
 
-    public moviePane pane;
+
     private int movieID;
     private String title;
     private int releaseYear;
@@ -90,8 +90,7 @@ public class Movie {
     private String poster;
     private boolean parentalRestriction;
 
-    public Movie(int movieID, String title, int releaseYear, String language, String countryOfOrigin, String genre, String directorLD, boolean isWatched, String leadingActorLD, String supportingActorLD, String about, int rating, String comments, String poster, boolean parentalRestriction) {
-        this.pane = new moviePane(title,poster);
+    public Movie(Connection conn, int movieID, String title, int releaseYear, String language, String countryOfOrigin, String genre, String directorLD, boolean isWatched, String leadingActorLD, String supportingActorLD, String about, int rating, String comments, String poster, boolean parentalRestriction) {
         this.movieID = movieID;
         this.title = title;
         this.releaseYear = releaseYear;
@@ -107,6 +106,7 @@ public class Movie {
         this.comments = comments;
         this.poster = poster;
         this.parentalRestriction = parentalRestriction;
+
     }
     
 }

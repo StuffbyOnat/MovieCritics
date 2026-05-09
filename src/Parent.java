@@ -1,9 +1,10 @@
+import javax.swing.*;
 import java.sql.Connection;
 
 public class Parent extends User{
 
-    public Parent(String username, String password, Connection conn){
-        super(username, password, conn);
+    public Parent(String username, String password, Connection conn, JFrame MainFrame) {
+        super(username, password, conn, MainFrame);
 
 
 

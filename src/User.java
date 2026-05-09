@@ -43,11 +43,14 @@ public abstract class User {
     private int userType;//1 for father,2 for mother,3 for son,4 for daughter
     private String email;
     private boolean isParent;
+    private JFrame MainFrame;
 
     public ArrayList<Movie> movies;
+    public ArrayList<moviePane> panes;
     Connection conn;
 
-    public User(String username, String password,Connection conn) {
+    public User(String username, String password,Connection conn,JFrame MainFrame) {
+        this.MainFrame=MainFrame;
         this.conn=conn;
     try(PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?")) {
         stmt.setString(1, username);
@@ -74,6 +77,7 @@ public abstract class User {
     }
         //Still in constructor
         movies=new ArrayList<>();
+    panes=new ArrayList<>();
         fetchMoviesFromDatabase();
     }
 
@@ -84,7 +88,7 @@ public abstract class User {
             try(ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Movie movie = new Movie(
+                    Movie movie = new Movie(conn,
                             rs.getInt("movieID"),
                             rs.getString("title"),
                             rs.getInt("releaseYear"),
@@ -101,13 +105,16 @@ public abstract class User {
                             rs.getString("poster"),
                             rs.getBoolean("parentalRestriction")
                     );
+                    moviePane pane = new moviePane(conn,movie.getTitle(),movie.getPoster(),movie.getMovieID(),MainFrame);
 
                     if(isParent) {
                         movies.add(movie);
+                        panes.add(pane);
                     }
                     else {
                         if(!movie.isParentalRestriction())
                             movies.add(movie);
+                            panes.add(pane);
                     }
                 }
             }
@@ -124,7 +131,7 @@ public abstract class User {
 
         for(int i = 0;i<movies.size();i++){
 
-            JPanel moviePane = movies.get(i).getPane();
+            JPanel moviePane = panes.get(i);
 
             mainPanel.add(moviePane);
 
