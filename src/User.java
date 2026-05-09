@@ -145,4 +145,19 @@ public abstract class User {
             searchScreen searchScreen = new searchScreen(searchTerm, conn, this,frame);
             searchScreen.setVisible(true);
     }
+
+    public Movie getMovieByID(int movieID) {
+        for(int i=0;i<movies.size();i++){
+            if(movies.get(i).getMovieID()==movieID)
+            return movies.get(i);
+        }
+        return null;
+    }
+    public moviePane getPaneByID(int movieID) {
+        for(int i=0;i<panes.size();i++){
+            if(panes.get(i).getMovieID()==movieID)
+                return panes.get(i);
+        }
+        return null;
+    }
 }

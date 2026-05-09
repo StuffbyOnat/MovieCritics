@@ -52,8 +52,19 @@
                           <Component id="parentalRestriction" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                          <Component id="rating" min="-2" pref="91" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="rating" min="-2" pref="91" max="-2" attributes="0"/>
+                                          <Component id="directorLabel" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Component id="directorField" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="yearLabel" alignment="0" min="-2" pref="37" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace min="-2" pref="83" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
@@ -73,6 +84,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="backButton" min="-2" max="-2" attributes="0"/>
                       <Component id="saveButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="yearField" alignment="0" min="-2" pref="71" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -102,8 +114,19 @@
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="rating" min="-2" max="-2" attributes="0"/>
                               <Component id="jScrollPane2" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="rating" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="directorLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="directorField" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="yearLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="yearField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -111,7 +134,7 @@
                           <Component id="deleteComment" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                  <EmptySpace pref="7" max="32767" attributes="0"/>
                   <Component id="saveButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="backButton" min="-2" max="-2" attributes="0"/>
@@ -241,6 +264,32 @@
               <Font name="Segoe UI" size="12" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Title: "/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="directorLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="12" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Director:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="directorField">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="director"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="yearLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="12" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Year: "/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="yearField">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="year"/>
           </Properties>
         </Component>
       </SubComponents>

@@ -17,7 +17,18 @@ public class moviePane extends JPanel {
 
     private Image posterImage;
     private boolean isHovered = false;
+
+    public void setMovieTitle(String movieTitle) {
+        this.movieTitle = movieTitle;
+    }
+
     private String movieTitle;
+
+    public int getMovieID() {
+        return movieID;
+    }
+
+    private int movieID;
     private JFrame previousFrame;
     Connection conn;
     User user;
@@ -26,6 +37,7 @@ public class moviePane extends JPanel {
         this.user=user;
         this.conn=conn;
         this.movieTitle = title;
+this.movieID=movieID;
 
         ImageIcon icon = new ImageIcon(getClass().getResource(poster));
         this.posterImage = icon.getImage();
@@ -49,7 +61,7 @@ public class moviePane extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(user.isParent()) {
-                    movieScreenParent movieScreen = new movieScreenParent(conn, title, poster, movieID, previousFrame, (Parent) user);
+                    movieScreenParent movieScreen = new movieScreenParent(conn, movieTitle, poster, movieID, previousFrame, (Parent) user,moviePane.this);
                     movieScreen.setVisible(true);
                     previousFrame.setVisible(false);
                 }

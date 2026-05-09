@@ -75,11 +75,42 @@ public class Movie {
 
 
     private int movieID;
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public void setCountryOfOrigin(String countryOfOrigin) {
+        this.countryOfOrigin = countryOfOrigin;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
     private String title;
+
+    public void setMovieID(int movieID) {
+        this.movieID = movieID;
+    }
+
     private int releaseYear;
     private String language;
     private String countryOfOrigin;
     private String genre;
+
+    public void setDirectorLD(String directorLD) {
+        this.directorLD = directorLD;
+    }
+
     private String directorLD;
     private boolean isWatched;
     private String leadingActorLD;

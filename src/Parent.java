@@ -37,7 +37,12 @@ public class Parent extends User{
     }
 
     public void editMovie(Movie movie){
-        //This method is done by the interactive movieScreenParent class. It is here to show that parents have the right to edit movies.
+        //This methods job is done by the interactive movieScreenParent class. It is here to show that parents have the right to edit movies.
+        setMovieName(movie,movie.getTitle());
+    }
+    public void setMovieName(Movie movie,String name){
+        getMovieByID(movie.getMovieID()).setTitle(movie.getTitle());
+
     }
 
     public void removeMovie(Movie movie){

@@ -20,12 +20,13 @@ public class movieScreenParent extends javax.swing.JFrame {
     Connection conn;
     int movieID;
     Movie movie;
+    moviePane pane;
     JFrame previousFrame;
     Parent user;
     /**
      * Creates new form movieScreen
      */
-    public movieScreenParent(Connection conn,String title,String poster,int movieID,JFrame previousFrame,Parent user) {
+    public movieScreenParent(Connection conn,String title,String poster,int movieID,JFrame previousFrame,Parent user,moviePane pane) {
         this.user=user;
         this.previousFrame=previousFrame;
         this.movieID=movieID;
@@ -60,6 +61,8 @@ public class movieScreenParent extends javax.swing.JFrame {
                     rating.setText("Rating: " + movie.getRating() + "/10");
                     titleField.setText(movie.getTitle());
                     deleteComment.setEnabled(false);
+                    directorField.setText(movie.getDirectorLD());
+                    yearField.setText(String.valueOf(movie.getReleaseYear()));
                 }
             }
         } catch (SQLException e) {
@@ -158,6 +161,10 @@ public class movieScreenParent extends javax.swing.JFrame {
         saveButton = new javax.swing.JButton();
         backButton = new javax.swing.JButton();
         titleField = new javax.swing.JTextField();
+        directorLabel = new javax.swing.JLabel();
+        directorField = new javax.swing.JTextField();
+        yearLabel = new javax.swing.JLabel();
+        yearField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 600));
@@ -208,6 +215,16 @@ public class movieScreenParent extends javax.swing.JFrame {
         titleField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         titleField.setText("Title: ");
 
+        directorLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        directorLabel.setText("Director:");
+
+        directorField.setText("director");
+
+        yearLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        yearLabel.setText("Year: ");
+
+        yearField.setText("year");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -226,8 +243,15 @@ public class movieScreenParent extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(parentalRestriction))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(rating, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(8, 8, 8)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(rating, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(directorLabel)))
+                                .addComponent(directorField))
+                            .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(83, 83, 83)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -241,7 +265,8 @@ public class movieScreenParent extends javax.swing.JFrame {
                 .addGap(43, 43, 43)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(backButton)
-                    .addComponent(saveButton))
+                    .addComponent(saveButton)
+                    .addComponent(yearField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -264,12 +289,21 @@ public class movieScreenParent extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(2, 2, 2)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rating)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(rating)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(directorLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(directorField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(yearLabel)
+                                    .addComponent(yearField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(deleteComment)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addComponent(saveButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(backButton)
@@ -316,9 +350,10 @@ public class movieScreenParent extends javax.swing.JFrame {
         //applying parentalRestriction
         boolean isRestricted = parentalRestriction.isSelected();
         int isSuccessful=user.setRestriction(movieID,isRestricted);
-        //for comments and about
-        if(!user_selector.getSelectedItem().equals("-User-")) {
-            String username = (String) user_selector.getSelectedItem();
+
+        String username = (String) user_selector.getSelectedItem();
+
+
 
 
             try (PreparedStatement ps = conn.prepareStatement("UPDATE Movies SET about = ? WHERE movieID = ?")) {
@@ -339,8 +374,30 @@ public class movieScreenParent extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this,"Error saving changes: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }
 
+            try(PreparedStatement ps = conn.prepareStatement("UPDATE Movies set directorld=? where movieID=?")) {
+                ps.setString(1, directorField.getText());
+                ps.setInt(2, movieID);
+                isSuccessful = ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,"Error saving changes: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
 
-        }
+            try(PreparedStatement ps = conn.prepareStatement("UPDATE Movies set releaseYear=? where movieID=?")) {
+                ps.setInt(1, Integer.parseInt(yearField.getText()));
+                ps.setInt(2, movieID);
+                isSuccessful = ps.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,"Error saving changes: " + e.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            }
+
+
+        
+        user.getMovieByID(movieID).setTitle(titleField.getText());
+        user.getPaneByID(movieID).setMovieTitle(titleField.getText());
+        user.getMovieByID(movieID).setDirectorLD(directorField.getText());
+        user.getMovieByID(movieID).setReleaseYear(Integer.parseInt(yearField.getText()));
         if (isSuccessful > 0) {
             JOptionPane.showMessageDialog(this, "Changes saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
@@ -361,6 +418,8 @@ public class movieScreenParent extends javax.swing.JFrame {
     private javax.swing.JTextArea comments;
     private javax.swing.JLabel commentsLabel;
     private javax.swing.JButton deleteComment;
+    private javax.swing.JTextField directorField;
+    private javax.swing.JLabel directorLabel;
     private javax.swing.JLabel icon;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -371,5 +430,7 @@ public class movieScreenParent extends javax.swing.JFrame {
     private javax.swing.JButton saveButton;
     private javax.swing.JTextField titleField;
     private javax.swing.JComboBox<String> user_selector;
+    private javax.swing.JTextField yearField;
+    private javax.swing.JLabel yearLabel;
     // End of variables declaration//GEN-END:variables
 }
