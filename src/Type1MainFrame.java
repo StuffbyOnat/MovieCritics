@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.sql.*;
 /**
  *
@@ -13,7 +15,9 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Type1MainFrame.class.getName());
     Utilities utilities;
     Connection conn;
-    User user;
+    Parent user;
+    private JPopupMenu menuPopup;
+    private JPopupMenu settingsPopup;
     
     /**
      * Creates new form Type1MainFrame
@@ -26,6 +30,7 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
         initComponents();
         this.setSize(800, 600);
         setFrameIcons();
+        createPopups();
         user.listInMovies(mainPanel);
     }
     
@@ -33,6 +38,106 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
     settingsButton.setIcon(utilities.setIconSize(20, 20, "/Icons/settings-icon.png"));
     menuButton.setIcon(utilities.setIconSize(20, 20, "/Icons/menu-icon.png"));
     searchbarButton.setIcon(utilities.setIconSize(20, 20, "/Icons/search-icon.png"));
+    }
+
+    private void createPopups() {
+        menuPopup = new JPopupMenu();
+
+        JMenuItem addMovie = new JMenuItem("Add Movie");
+        JMenuItem removeMovie = new JMenuItem("Remove Movie");
+        JMenuItem familyItem = new JMenuItem("Family Analytics");
+
+        addMovie.addActionListener(e -> {
+           String title = JOptionPane.showInputDialog(this, "Enter movie title:");
+           int releaseYear = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter release year:"));
+              String language = JOptionPane.showInputDialog(this, "Enter language:");
+                String country = JOptionPane.showInputDialog(this, "Enter country of origin:");
+                String genre = JOptionPane.showInputDialog(this, "Enter genre:");
+                String director = JOptionPane.showInputDialog(this, "Enter director:");
+                String leadingActor = JOptionPane.showInputDialog(this, "Enter leading actor:");
+                String supportingActor = JOptionPane.showInputDialog(this, "Enter supporting actor:");
+                String about = JOptionPane.showInputDialog(this, "Enter about:");
+                String posterPath = JOptionPane.showInputDialog(this, "Enter poster path:");
+                int rating = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter rating (0-10):"));
+                if(rating<0 || rating>10){
+                    JOptionPane.showMessageDialog(this, "Rating must be between 0 and 10. Setting to 10 by default.");
+                    rating=10;
+                }
+                boolean isRestricted = JOptionPane.showConfirmDialog(this, "Is this movie restricted?", "Parental Restriction", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+
+                try(PreparedStatement stmt = conn.prepareStatement("INSERT INTO movies (title, releaseYear, language, countryOfOrigin, genre, directorld, leadingActorld, supportingActorld, about,rating, poster, parentalRestriction) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                    stmt.setString(1, title);
+                    stmt.setInt(2, releaseYear);
+                    stmt.setString(3, language);
+                    stmt.setString(4, country);
+                    stmt.setString(5, genre);
+                    stmt.setString(6, director);
+                    stmt.setString(7, leadingActor);
+                    stmt.setString(8, supportingActor);
+                    stmt.setString(9, about);
+                    stmt.setInt(10, rating);
+                    stmt.setString(11, posterPath);
+                    stmt.setBoolean(12, isRestricted);
+
+                    int affectedRows = stmt.executeUpdate();
+                    if(affectedRows>0){
+                        try(ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                            if (generatedKeys.next()) {
+                                int newMovieID = generatedKeys.getInt(1);
+                                Movie newMovie = new Movie(conn, newMovieID, title, releaseYear, language, country, genre, director, false, leadingActor, supportingActor, about, rating, "", posterPath, isRestricted);
+                                user.movies.add(newMovie);
+                                moviePane newPane = new moviePane(conn,title,posterPath,newMovieID,this,(Parent)user);
+                                user.panes.add(newPane);
+                                mainPanel.add(newPane);
+                                mainPanel.revalidate();
+                                mainPanel.repaint();
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Failed to add movie.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Error adding movie: " + ex.getMessage());
+                }
+        });
+
+        removeMovie.addActionListener(ev -> {
+            int movieID = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter movie ID to remove:"));
+            try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM movies WHERE movieID = ?")) {
+                stmt.setInt(1, movieID);
+                int affectedRows = stmt.executeUpdate();
+                if (affectedRows > 0) {
+
+                    refreshMovies();
+                    JOptionPane.showMessageDialog(this, "Movie removed successfully.");
+                }
+                 else{
+                    JOptionPane.showMessageDialog(this, "No movie found with the given ID.");
+                }
+            }
+            catch (SQLException e){
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error removing movie: " + e.getMessage());
+            }
+    });
+
+        menuPopup.add(addMovie);
+        menuPopup.add(removeMovie);
+        menuPopup.addSeparator();
+        menuPopup.add(familyItem);
+
+
+        settingsPopup = new JPopupMenu();
+
+        JMenuItem logoutItem = new JMenuItem("Logout");
+        JMenuItem themeItem = new JMenuItem("Dark Theme");
+        JMenuItem prefsItem = new JMenuItem("Preferences");
+
+        themeItem.addActionListener(e -> JOptionPane.showMessageDialog(this, "Theme settings coming soon..."));
+
+        settingsPopup.add(themeItem);
+        settingsPopup.add(prefsItem);
     }
 
     /**
@@ -62,6 +167,8 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
 
         username.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         username.setText("Username");
+
+        menuButton.addActionListener(this::menuButtonActionPerformed);
 
         recentMoviesLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         recentMoviesLabel.setText("Recent Movies :");
@@ -157,9 +264,16 @@ searchbar.setText("");
         }
     }//GEN-LAST:event_searchbarFocusLost
 
+    private void menuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuButtonActionPerformed
+            menuPopup.show(menuButton, 0, menuButton.getHeight());
+    }//GEN-LAST:event_menuButtonActionPerformed
+
     @Override
     public void refreshMovies() {
-
+        user.movies.clear();
+        user.panes.clear();
+        user.fetchMoviesFromDatabase();
+        user.listInMovies(mainPanel);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

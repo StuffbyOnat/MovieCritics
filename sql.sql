@@ -20,7 +20,7 @@ CREATE TABLE Movies
     rating tinyint CHECK (rating >= 1 AND rating <= 10),
     comments text,
     poster varchar(255),
-    parentalRestriction boolean default false
+    parentalRestriction boolean
 ) AUTO_INCREMENT=1000;
 
 CREATE TABLE Persons

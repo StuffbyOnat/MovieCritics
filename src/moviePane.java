@@ -38,10 +38,13 @@ public class moviePane extends JPanel {
         this.conn=conn;
         this.movieTitle = title;
 this.movieID=movieID;
-
-        ImageIcon icon = new ImageIcon(getClass().getResource(poster));
-        this.posterImage = icon.getImage();
-
+try {
+    ImageIcon icon = new ImageIcon(getClass().getResource(poster));
+    this.posterImage = icon.getImage();
+}
+catch (Exception e){
+    e.printStackTrace();
+}
         setPreferredSize(new Dimension(160, 240));
         setCursor(new Cursor(Cursor.HAND_CURSOR));
 
