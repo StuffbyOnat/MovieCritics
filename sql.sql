@@ -49,6 +49,7 @@ CREATE TABLE User_Critics
     movieID int(10) not null,
     rating int(10) CHECK (rating >= 1 AND rating <= 10),
     comment text,
+    isWatched boolean default false,
     PRIMARY KEY (userID, movieID),
     FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE,
     FOREIGN KEY (movieID) REFERENCES Movies(movieID) ON DELETE CASCADE

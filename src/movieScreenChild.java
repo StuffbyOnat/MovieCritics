@@ -8,6 +8,7 @@ public class movieScreenChild extends javax.swing.JFrame {
     Child currentUser;
     JFrame previousFrame;
     Utilities utilities = new Utilities();
+    private String aboutText = "";
 
     public movieScreenChild(Connection conn, int movieID, JFrame previousFrame, Child currentUser) {
         this.conn = conn;
@@ -15,29 +16,43 @@ public class movieScreenChild extends javax.swing.JFrame {
         this.previousFrame = previousFrame;
         this.currentUser = currentUser;
         initComponents();
-        this.setSize(400,600);
+        this.setSize(400, 700);
         this.setLocation(previousFrame.getLocation());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         loadMovieDetails();
     }
 
     private void loadMovieDetails() {
-        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM Movies WHERE movieID = ?")) {
-            ps.setInt(1, movieID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                // Bilgileri Label'lara aktar (Düzenleme kapalı)
-                titleLabel.setText("Title: " + rs.getString("title"));
-                directorLabel.setText("Director: " + rs.getString("directorLD"));
-                yearLabel.setText("Year: " + rs.getInt("releaseYear"));
-                genreLabel.setText("Genre: " + rs.getString("genre"));
-                ratingLabel.setText("Average Rating: " + rs.getInt("rating") + "/10");
+        try {
+            String movieSql = "SELECT * FROM Movies WHERE movieID = ?";
+            try (PreparedStatement ps = conn.prepareStatement(movieSql)) {
+                ps.setInt(1, movieID);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    titleLabel.setText("Title: " + rs.getString("title"));
+                    directorLabel.setText("Director: " + rs.getString("directorLD"));
+                    yearLabel.setText("Year: " + rs.getInt("releaseYear"));
+                    genreLabel.setText("Genre: " + rs.getString("genre"));
+                    ratingLabel.setText("Avg Rating: " + rs.getInt("rating") + "/10");
+                    aboutArea.setText(rs.getString("about"));
+                    String posterPath = rs.getString("poster");
+                    posterLabel.setIcon(utilities.setIconSize(150, 200, posterPath));
+                }
+            }
 
-                aboutArea.setText(rs.getString("about"));
-                aboutArea.setEditable(false); // Çocuklar özeti değiştiremez
-
-                String posterPath = rs.getString("poster");
-                posterLabel.setIcon(utilities.setIconSize(150, 200, posterPath));
+            String criticSql = "SELECT rating, isWatched FROM User_Critics WHERE userID = ? AND movieID = ?";
+            try (PreparedStatement ps = conn.prepareStatement(criticSql)) {
+                ps.setInt(1, currentUser.getUserID());
+                ps.setInt(2, movieID);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    int userRating = rs.getInt("rating");
+                    yourRatingLabel.setText("Your Rating: " + (userRating > 0 ? userRating + "/10" : "None"));
+                    isWatchedCheckBox.setSelected(rs.getBoolean("isWatched"));
+                } else {
+                    yourRatingLabel.setText("Your Rating: None");
+                    isWatchedCheckBox.setSelected(false);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,19 +65,87 @@ public class movieScreenChild extends javax.swing.JFrame {
         yearLabel = new JLabel();
         genreLabel = new JLabel();
         ratingLabel = new JLabel();
+        yourRatingLabel = new JLabel();
         posterLabel = new JLabel();
-        aboutArea = new JTextArea(5, 20);
+        
+        aboutArea = new JTextArea(5, 25);
+        aboutArea.setEditable(false);
+        aboutArea.setLineWrap(true);
+        aboutArea.setWrapStyleWord(true);
+        JScrollPane aboutScrollPane = new JScrollPane(aboutArea);
+
+        isWatchedCheckBox = new JCheckBox("Mark as Watched");
+        addCommentBtn = new JButton("Add/Edit Review");
         addToWatchlistBtn = new JButton("Add to Watchlist");
         backBtn = new JButton("Back");
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Movie Details");
         setLayout(new java.awt.FlowLayout());
+
+        addCommentBtn.addActionListener(e -> {
+            String ratingStr = JOptionPane.showInputDialog(this, "Rate this movie (1-10):");
+            if (ratingStr == null || ratingStr.trim().isEmpty()) return;
+
+            int rating;
+            try {
+                rating = Integer.parseInt(ratingStr);
+                if (rating < 1 || rating > 10) {
+                    JOptionPane.showMessageDialog(this, "Rating must be between 1 and 10.");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid number format!");
+                return;
+            }
+
+            String comment = JOptionPane.showInputDialog(this, "Write your comment:");
+            if (comment == null) comment = "";
+
+            boolean watched = isWatchedCheckBox.isSelected();
+
+            try {
+                String checkSql = "SELECT * FROM User_Critics WHERE userID = ? AND movieID = ?";
+                boolean exists = false;
+                try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                    checkStmt.setInt(1, currentUser.getUserID());
+                    checkStmt.setInt(2, movieID);
+                    ResultSet rs = checkStmt.executeQuery();
+                    if (rs.next()) exists = true;
+                }
+
+                if (exists) {
+                    String updateSql = "UPDATE User_Critics SET rating = ?, comment = ?, isWatched = ? WHERE userID = ? AND movieID = ?";
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                        updateStmt.setInt(1, rating);
+                        updateStmt.setString(2, comment);
+                        updateStmt.setBoolean(3, watched);
+                        updateStmt.setInt(4, currentUser.getUserID());
+                        updateStmt.setInt(5, movieID);
+                        updateStmt.executeUpdate();
+                    }
+                } else {
+                    String insertSql = "INSERT INTO User_Critics (userID, movieID, rating, comment, isWatched) VALUES (?, ?, ?, ?, ?)";
+                    try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                        insertStmt.setInt(1, currentUser.getUserID());
+                        insertStmt.setInt(2, movieID);
+                        insertStmt.setInt(3, rating);
+                        insertStmt.setString(4, comment);
+                        insertStmt.setBoolean(5, watched);
+                        insertStmt.executeUpdate();
+                    }
+                }
+                JOptionPane.showMessageDialog(this, "Review saved!");
+                loadMovieDetails();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Database Error!");
+            }
+        });
 
         addToWatchlistBtn.addActionListener(e -> {
             Watchlist wl = new Watchlist(conn, currentUser.getUserID());
             if (wl.addMovie(movieID)) {
-                JOptionPane.showMessageDialog(this, "Film listenize eklendi!");
+                JOptionPane.showMessageDialog(this, "Added to watchlist!");
             }
         });
 
@@ -75,15 +158,19 @@ public class movieScreenChild extends javax.swing.JFrame {
         add(titleLabel);
         add(directorLabel);
         add(yearLabel);
-        add(aboutArea);
+        add(genreLabel);
+        add(ratingLabel);
+        add(yourRatingLabel);
+        add(new JLabel("About:"));
+        add(aboutScrollPane);
+        add(isWatchedCheckBox);
+        add(addCommentBtn);
         add(addToWatchlistBtn);
         add(backBtn);
-
-        pack();
-        setLocationRelativeTo(null);
     }
 
-    private JLabel titleLabel, directorLabel, yearLabel, genreLabel, ratingLabel, posterLabel;
+    private JLabel titleLabel, directorLabel, yearLabel, genreLabel, ratingLabel, yourRatingLabel, posterLabel;
     private JTextArea aboutArea;
-    private JButton addToWatchlistBtn, backBtn;
+    private JCheckBox isWatchedCheckBox;
+    private JButton addCommentBtn, addToWatchlistBtn, backBtn;
 }
