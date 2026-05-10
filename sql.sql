@@ -28,6 +28,7 @@ CREATE TABLE Persons
     personID int(10) auto_increment primary key,
     firstName varchar(100),
     lastName varchar(100),
+    fullName varchar(100),
     dateOfBirth date,
     nationality varchar(100)
 ) AUTO_INCREMENT=2000;
@@ -71,7 +72,8 @@ BEGIN
     SET rating = (SELECT ROUND(AVG(rating)) FROM User_Critics WHERE movieID = NEW.movieID)
     WHERE movieID = NEW.movieID;
 END //
-DELIMITER ;
+
+
 
 INSERT INTO Users(username, password, userType, email, isParent) VALUES 
 ('onatu', '1234', 1, 'onat.unlu@yandex.com', true),
@@ -80,12 +82,12 @@ INSERT INTO Users(username, password, userType, email, isParent) VALUES
 ('barisu', '1234', 3, 'baris.unlu@cibirnet.com', false),
 ('edipa', '1234', 1, 'edip.akbayram@anatolia.com', true);
 
-INSERT INTO Persons (firstName, lastName, dateOfBirth, nationality) VALUES 
-('Christopher', 'Nolan', '1970-07-30', 'British'),
-('Quentin', 'Tarantino', '1963-03-27', 'American'),
-('Christian', 'Bale', '1974-01-30', 'British'),
-('Brad', 'Pitt', '1963-12-18', 'American'),
-('Uma', 'Thurman', '1970-04-29', 'American');
+INSERT INTO Persons (firstName, lastName, fullName, dateOfBirth, nationality) VALUES 
+('Christopher', 'Nolan', 'Christopher Nolan', '1970-07-30', 'British'),
+('Quentin', 'Tarantino', 'Quentin Tarantino', '1963-03-27', 'American'),
+('Christian', 'Bale', 'Christian Bale', '1974-01-30', 'British'),
+('Brad', 'Pitt', 'Brad Pitt', '1963-12-18', 'American'),
+('Uma', 'Thurman', 'Uma Thurman', '1970-04-29', 'American');
 
 INSERT INTO Movies (title, releaseYear, language, countryOfOrigin, genre, directorld, leadingActorld, supportingActorld, about, poster, parentalRestriction) VALUES 
 ('Inception', 2010, 'English', 'USA', 'Sci-Fi', 'Christopher Nolan', 'Leonardo DiCaprio', 'Joseph Gordon-Levitt', 'Theft within dreams.','/Posters/Inception.jpg', false),
@@ -107,6 +109,30 @@ INSERT INTO watchlists (userID, movieID) VALUES
 (3, 1003),
 (4, 1002),
 (5, 1001);
+
+CREATE TRIGGER after_movie_insert
+AFTER INSERT ON Movies
+FOR EACH ROW
+BEGIN
+    IF NEW.directorld IS NOT NULL AND NEW.directorld != '' THEN
+        IF NOT EXISTS (SELECT 1 FROM Persons WHERE fullName = NEW.directorld) THEN
+            INSERT INTO Persons(fullName) VALUES (NEW.directorld);
+        END IF;
+    END IF;
+
+    IF NEW.leadingActorld IS NOT NULL AND NEW.leadingActorld != '' THEN
+        IF NOT EXISTS (SELECT 1 FROM Persons WHERE fullName = NEW.leadingActorld) THEN
+            INSERT INTO Persons(fullName) VALUES (NEW.leadingActorld);
+        END IF;
+    END IF;
+
+    IF NEW.supportingActorld IS NOT NULL AND NEW.supportingActorld != '' THEN
+        IF NOT EXISTS (SELECT 1 FROM Persons WHERE fullName = NEW.supportingActorld) THEN
+            INSERT INTO Persons(fullName) VALUES (NEW.supportingActorld);
+        END IF;
+    END IF;
+END //
+DELIMITER ;
 
 SELECT * FROM Movies;
 SELECT * FROM Persons;

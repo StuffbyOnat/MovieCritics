@@ -1,6 +1,12 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.sql.*;
 
+
+/**
+ *
+ * @author onatu
+ */
 public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Type1MainFrame.class.getName());
@@ -36,6 +42,9 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
         JMenuItem addUser = new JMenuItem("Add User");
         JMenuItem updateUser = new JMenuItem("Update User");
         JMenuItem removeUser = new JMenuItem("Remove User");
+        JMenuItem addPerson = new JMenuItem("Add Person");
+        JMenuItem updatePerson = new JMenuItem("Update Person");
+        JMenuItem removePerson = new JMenuItem("Remove Person");
         JMenuItem familyItem = new JMenuItem("Family Analytics");
 
         addMovie.addActionListener(e -> {
@@ -130,6 +139,128 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
             } catch (SQLException e){
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error removing movie: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        addPerson.addActionListener(e -> {
+            try {
+                String firstName = JOptionPane.showInputDialog(this, "Enter first name:");
+                if (firstName == null || firstName.trim().isEmpty()) return;
+
+                String lastName = JOptionPane.showInputDialog(this, "Enter last name:");
+                if (lastName == null || lastName.trim().isEmpty()) return;
+
+                String dobStr = JOptionPane.showInputDialog(this, "Enter date of birth (YYYY-MM-DD):");
+                if (dobStr == null || dobStr.trim().isEmpty()) return;
+                Date dob = Date.valueOf(dobStr);
+
+                String nationality = JOptionPane.showInputDialog(this, "Enter nationality:");
+                if (nationality == null) return;
+
+                String fullName = firstName.trim() + " " + lastName.trim();
+
+                String sql = "INSERT INTO Persons (firstName, lastName, fullName, dateOfBirth, nationality) VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setString(1, firstName);
+                    stmt.setString(2, lastName);
+                    stmt.setString(3, fullName);
+                    stmt.setDate(4, dob);
+                    stmt.setString(5, nationality);
+
+                    int affectedRows = stmt.executeUpdate();
+                    if (affectedRows > 0) {
+                        JOptionPane.showMessageDialog(this, "Person '" + fullName + "' added successfully!");
+                    }
+                }
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid date format! Please use YYYY-MM-DD.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error adding person: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        updatePerson.addActionListener(e -> {
+            try {
+                String idStr = JOptionPane.showInputDialog(this, "Enter Person ID to update:");
+                if (idStr == null || idStr.trim().isEmpty()) return;
+                int personIdToUpdate = Integer.parseInt(idStr);
+
+                String fetchSql = "SELECT * FROM Persons WHERE personID = ?";
+                try (PreparedStatement fetchStmt = conn.prepareStatement(fetchSql)) {
+                    fetchStmt.setInt(1, personIdToUpdate);
+                    try (ResultSet rs = fetchStmt.executeQuery()) {
+                        if (!rs.next()) {
+                            JOptionPane.showMessageDialog(this, "Person not found!", "Warning", JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+
+                        String currentFirstName = rs.getString("firstName");
+                        String currentLastName = rs.getString("lastName");
+                        String currentDateOfBirth = rs.getDate("dateOfBirth") != null ? rs.getDate("dateOfBirth").toString() : "";
+                        String currentNationality = rs.getString("nationality");
+
+                        String newFirstName = (String) JOptionPane.showInputDialog(this, "Update first name:", "Update Person", JOptionPane.QUESTION_MESSAGE, null, null, currentFirstName);
+                        if (newFirstName == null || newFirstName.trim().isEmpty()) return;
+
+                        String newLastName = (String) JOptionPane.showInputDialog(this, "Update last name:", "Update Person", JOptionPane.QUESTION_MESSAGE, null, null, currentLastName);
+                        if (newLastName == null || newLastName.trim().isEmpty()) return;
+
+                        String dobStr = (String) JOptionPane.showInputDialog(this, "Update date of birth (YYYY-MM-DD):", "Update Person", JOptionPane.QUESTION_MESSAGE, null, null, currentDateOfBirth);
+                        if (dobStr == null || dobStr.trim().isEmpty()) return;
+                        Date newDob = Date.valueOf(dobStr);
+
+                        String newNationality = (String) JOptionPane.showInputDialog(this, "Update nationality:", "Update Person", JOptionPane.QUESTION_MESSAGE, null, null, currentNationality);
+                        if (newNationality == null) return;
+
+                        String newFullName = newFirstName.trim() + " " + newLastName.trim();
+
+                        String updateSql = "UPDATE Persons SET firstName = ?, lastName = ?, fullName = ?, dateOfBirth = ?, nationality = ? WHERE personID = ?";
+                        try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                            updateStmt.setString(1, newFirstName);
+                            updateStmt.setString(2, newLastName);
+                            updateStmt.setString(3, newFullName);
+                            updateStmt.setDate(4, newDob);
+                            updateStmt.setString(5, newNationality);
+                            updateStmt.setInt(6, personIdToUpdate);
+
+                            int affectedRows = updateStmt.executeUpdate();
+                            if (affectedRows > 0) {
+                                JOptionPane.showMessageDialog(this, "Person '" + newFullName + "' updated successfully!");
+                            }
+                        }
+                    }
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid numeric ID!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid date format! Please use YYYY-MM-DD.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error updating person: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        removePerson.addActionListener(e -> {
+            try {
+                String idStr = JOptionPane.showInputDialog(this, "Enter Person ID to remove:");
+                if (idStr == null || idStr.trim().isEmpty()) return;
+                int idToRemove = Integer.parseInt(idStr);
+
+                try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM Persons WHERE personID = ?")) {
+                    stmt.setInt(1, idToRemove);
+                    int affectedRows = stmt.executeUpdate();
+                    if (affectedRows > 0) {
+                        JOptionPane.showMessageDialog(this, "Person removed successfully.");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "No person found with the given ID.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid numeric ID!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error removing person: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -272,6 +403,10 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
         menuPopup.add(addMovie);
         menuPopup.add(removeMovie);
         menuPopup.addSeparator();
+        menuPopup.add(addPerson);
+        menuPopup.add(updatePerson);
+        menuPopup.add(removePerson);
+        menuPopup.addSeparator();
         menuPopup.add(addUser);
         menuPopup.add(updateUser);
         menuPopup.add(removeUser);
@@ -285,12 +420,15 @@ public class Type1MainFrame extends javax.swing.JFrame implements MainFrame {
         JMenuItem themeItem = new JMenuItem("Dark Theme");
         JMenuItem prefsItem = new JMenuItem("Preferences");
 
-        themeItem.addActionListener(e -> JOptionPane.showMessageDialog(this, "Theme settings coming soon..."));
+        themeItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Dark Theme is currently under development. Stay tuned for future updates!", "Coming Soon", JOptionPane.INFORMATION_MESSAGE);
+        });
 
         logoutItem.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to log out?", "Logout", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 this.dispose();
+                new loginFrame().setVisible(true);
             }
         });
 

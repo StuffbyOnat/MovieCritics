@@ -11,6 +11,7 @@ public class Child extends User {
     @Override
     public void fetchMoviesFromDatabase() {
         this.movies.clear();
+        this.panes.clear();
         String sql = "SELECT * FROM Movies WHERE parentalRestriction = false";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();

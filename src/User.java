@@ -87,6 +87,8 @@ public abstract class User {
     }
 
     void fetchMoviesFromDatabase(){
+            movies.clear();
+            panes.clear();
 
         try(PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Movies")) {
 

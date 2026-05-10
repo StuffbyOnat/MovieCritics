@@ -137,6 +137,7 @@ public class Type2MainFrame extends javax.swing.JFrame implements MainFrame {
         String searchTerm = searchbar.getText();
         if(!searchTerm.equals("Search")) {
             user.searchMovies(searchTerm,this);
+            this.setVisible(false);
         }
     }
 
