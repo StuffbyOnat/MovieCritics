@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.sql.*;
 
 public class movieScreenChild extends javax.swing.JFrame {
@@ -16,9 +17,9 @@ public class movieScreenChild extends javax.swing.JFrame {
         this.previousFrame = previousFrame;
         this.currentUser = currentUser;
         initComponents();
-        this.setSize(400, 700);
-        this.setLocation(previousFrame.getLocation());
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.setSize(450, 750);
+        this.setLocationRelativeTo(previousFrame);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         loadMovieDetails();
     }
 
@@ -29,7 +30,7 @@ public class movieScreenChild extends javax.swing.JFrame {
                 ps.setInt(1, movieID);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
-                    titleLabel.setText("Title: " + rs.getString("title"));
+                    titleLabel.setText(rs.getString("title"));
                     directorLabel.setText("Director: " + rs.getString("directorLD"));
                     yearLabel.setText("Year: " + rs.getInt("releaseYear"));
                     genreLabel.setText("Genre: " + rs.getString("genre"));
@@ -60,27 +61,68 @@ public class movieScreenChild extends javax.swing.JFrame {
     }
 
     private void initComponents() {
+        setTitle("Movie Details");
+        setLayout(new BorderLayout());
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        posterLabel = new JLabel();
+        posterLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         titleLabel = new JLabel();
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         directorLabel = new JLabel();
         yearLabel = new JLabel();
         genreLabel = new JLabel();
         ratingLabel = new JLabel();
         yourRatingLabel = new JLabel();
-        posterLabel = new JLabel();
         
-        aboutArea = new JTextArea(5, 25);
+        Font infoFont = new Font("Segoe UI", Font.PLAIN, 14);
+        directorLabel.setFont(infoFont);
+        yearLabel.setFont(infoFont);
+        genreLabel.setFont(infoFont);
+        ratingLabel.setFont(infoFont);
+        yourRatingLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+        infoPanel.add(directorLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        infoPanel.add(yearLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        infoPanel.add(genreLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        infoPanel.add(ratingLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        infoPanel.add(yourRatingLabel);
+
+        JLabel aboutTitle = new JLabel("Summary:");
+        aboutTitle.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        aboutTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        aboutArea = new JTextArea(6, 25);
         aboutArea.setEditable(false);
         aboutArea.setLineWrap(true);
         aboutArea.setWrapStyleWord(true);
+        aboutArea.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         JScrollPane aboutScrollPane = new JScrollPane(aboutArea);
+        aboutScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         isWatchedCheckBox = new JCheckBox("Mark as Watched");
+        isWatchedCheckBox.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        isWatchedCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         addCommentBtn = new JButton("Add/Edit Review");
         addToWatchlistBtn = new JButton("Add to Watchlist");
         backBtn = new JButton("Back");
-
-        setTitle("Movie Details");
-        setLayout(new java.awt.FlowLayout());
 
         addCommentBtn.addActionListener(e -> {
             String ratingStr = JOptionPane.showInputDialog(this, "Rate this movie (1-10):");
@@ -154,19 +196,30 @@ public class movieScreenChild extends javax.swing.JFrame {
             this.dispose();
         });
 
-        add(posterLabel);
-        add(titleLabel);
-        add(directorLabel);
-        add(yearLabel);
-        add(genreLabel);
-        add(ratingLabel);
-        add(yourRatingLabel);
-        add(new JLabel("About:"));
-        add(aboutScrollPane);
-        add(isWatchedCheckBox);
-        add(addCommentBtn);
-        add(addToWatchlistBtn);
-        add(backBtn);
+        buttonPanel.add(addCommentBtn);
+        buttonPanel.add(addToWatchlistBtn);
+        buttonPanel.add(backBtn);
+
+        mainPanel.add(posterLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        mainPanel.add(infoPanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        
+        JPanel aboutContainer = new JPanel();
+        aboutContainer.setLayout(new BoxLayout(aboutContainer, BoxLayout.Y_AXIS));
+        aboutContainer.add(aboutTitle);
+        aboutContainer.add(Box.createRigidArea(new Dimension(0, 5)));
+        aboutContainer.add(aboutScrollPane);
+        
+        mainPanel.add(aboutContainer);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        mainPanel.add(isWatchedCheckBox);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        mainPanel.add(buttonPanel);
+
+        add(mainPanel, BorderLayout.CENTER);
     }
 
     private JLabel titleLabel, directorLabel, yearLabel, genreLabel, ratingLabel, yourRatingLabel, posterLabel;

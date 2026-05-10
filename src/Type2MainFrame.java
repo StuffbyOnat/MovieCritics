@@ -16,6 +16,7 @@ public class Type2MainFrame extends javax.swing.JFrame implements MainFrame {
         utilities = new Utilities();
         initComponents();
         this.setSize(800, 600);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.username.setText(username);
         setFrameIcons();
         createPopups();
